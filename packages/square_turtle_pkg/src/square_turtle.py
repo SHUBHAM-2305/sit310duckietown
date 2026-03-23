@@ -2,15 +2,17 @@
 import rospy
 from geometry_msgs.msg import Twist
 
-def draw_square():
-    rospy.init_node('square_turtle')
+def square():
+    rospy.init_node('square_turtle', anonymous=True)
     pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+    rate = rospy.Rate(10)
 
-    rate = rospy.Rate(1)
+    move = Twist()
+    turn = Twist()
 
     while not rospy.is_shutdown():
+
         # move forward
-        move = Twist()
         move.linear.x = 2.0
         move.angular.z = 0.0
         pub.publish(move)
@@ -20,8 +22,8 @@ def draw_square():
         pub.publish(Twist())
         rospy.sleep(0.5)
 
-        # turn 90 deg
-        turn = Twist()
+        # turn 90 degrees
+        turn.linear.x = 0.0
         turn.angular.z = 1.57
         pub.publish(turn)
         rospy.sleep(1)
@@ -31,6 +33,6 @@ def draw_square():
 
 if __name__ == '__main__':
     try:
-        draw_square()
+        square()
     except rospy.ROSInterruptException:
         pass
