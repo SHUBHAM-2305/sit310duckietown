@@ -1,38 +1,51 @@
 #!/usr/bin/env python3
+
 import rospy
 from geometry_msgs.msg import Twist
+import time
 
-def square():
-    rospy.init_node('square_turtle', anonymous=True)
+def move_square():
+
+    # Initialize node
+    rospy.init_node('square_turtle_node', anonymous=True)
+
+    # Publisher to control turtle
     pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
-    rate = rospy.Rate(10)
 
-    move = Twist()
-    turn = Twist()
+    # Wait a bit for connection
+    time.sleep(2)
 
-    while not rospy.is_shutdown():
+    msg = Twist()
 
-        # move forward
-        move.linear.x = 2.0
-        move.angular.z = 0.0
-        pub.publish(move)
-        rospy.sleep(2)
+    rospy.loginfo("Turtles are great at drawing squares!")
 
-        # stop
-        pub.publish(Twist())
-        rospy.sleep(0.5)
+    for i in range(4):
 
-        # turn 90 degrees
-        turn.linear.x = 0.0
-        turn.angular.z = 1.57
-        pub.publish(turn)
-        rospy.sleep(1)
+        # MOVE FORWARD
+        msg.linear.x = 2.0
+        msg.angular.z = 0.0
+        pub.publish(msg)
+        time.sleep(2)
 
-        pub.publish(Twist())
-        rospy.sleep(0.5)
+        # STOP
+        msg.linear.x = 0.0
+        pub.publish(msg)
+        time.sleep(1)
+
+        # TURN 90 DEGREE
+        msg.angular.z = 1.57   # approx 90 degrees
+        pub.publish(msg)
+        time.sleep(1)
+
+        # STOP AGAIN
+        msg.angular.z = 0.0
+        pub.publish(msg)
+        time.sleep(1)
+
+    rospy.loginfo("Finished drawing square!")
 
 if __name__ == '__main__':
     try:
-        square()
+        move_square()
     except rospy.ROSInterruptException:
         pass
